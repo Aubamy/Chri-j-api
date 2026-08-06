@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const auth = require('../Middleware/auth');
-const upload = require('../middleware/uploadMiddleware');
+const upload = require('../Middleware/uploadMiddleware');
 
 const {
     addProduct,
