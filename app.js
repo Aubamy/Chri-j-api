@@ -6,6 +6,7 @@ const { sequelize, connectDB } = require('./config/database');
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth/', authRoutes);
 app.use('/api/products/', productRoutes);
+app.use('/api/admin', adminRoutes)
 
 const PORT = process.env.PORT || 3000;
 
