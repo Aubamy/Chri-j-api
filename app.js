@@ -23,7 +23,7 @@ sequelize.sync({ alter: true })
     });
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('Welcome to the Chri-j Luxury API');
 });
 
 app.use('/api/auth/', authRoutes);
