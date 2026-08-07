@@ -66,40 +66,72 @@ exports.addProduct = async (req, res) => {
 };
 
 exports.editProduct = async (req, res) => {
-
     try {
-        if (req.user.role !== 'admin') {
+        // Check admin
+        if (req.user.role !== "admin") {
             return res.status(403).json({
-                message: 'Access denied'
+                message: "Access denied",
             });
         }
 
-        const id = req.params.id;
+        const { id } = req.params;
 
+        // Find product
         const product = await Product.findByPk(id);
 
         if (!product) {
             return res.status(404).json({
-                message: 'Product not found'
+                message: "Product not found",
             });
         }
 
-        await product.update(req.body);
-
-        return res.json({
-            message: 'Product updated successfully',
-            product
+        // Validate incoming fields
+        const schema = Joi.object({
+            name: Joi.string().required(),
+            description: Joi.string().required(),
+            price: Joi.number().positive().required(),
         });
 
+        const { error } = schema.validate(req.body);
+
+        if (error) {
+            return res.status(400).json({
+                message: error.details[0].message,
+            });
+        }
+
+        let imageUrl = product.image;
+
+        // Upload new image only if admin selected one
+        if (req.file) {
+            const result = await uploadToCloudinary(
+                req.file.buffer
+            );
+
+            imageUrl = result.secure_url;
+        }
+
+        // Update product
+        await product.update({
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            image: imageUrl,
+        });
+
+        return res.status(200).json({
+            message: "Product updated successfully",
+            product,
+        });
     } catch (error) {
-        console.log(error);
+        console.error("EDIT PRODUCT ERROR:", error);
+
         return res.status(500).json({
-            message: 'Server error',
-            error: error.message
+            message: "Server error while updating product",
+            error: error.message,
         });
     }
 };
-
 
 
 exports.deleteProduct = async (req, res) => {
