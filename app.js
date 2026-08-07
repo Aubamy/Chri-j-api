@@ -11,8 +11,6 @@ const adminRoutes = require('./routes/adminRoutes');
 const app = express();
 const cors = require("cors");
 
-const app = express();
-
 app.use(cors({
     origin: [
         "http://localhost:5173",
